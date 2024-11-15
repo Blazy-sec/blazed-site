@@ -1,0 +1,109 @@
+body {
+    background-color: gray;
+    font-family: Arial, sans-serif;
+    background-image: url('backgrounds.png');
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.logo {
+    color: chartreuse;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.navbar-links a {
+    color: paleturquoise;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.navbar-links a:hover {
+    color: white;
+}
+
+.desc {
+    color: chartreuse;
+    font-size: 24px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+p {
+    color: paleturquoise;
+    text-align: center;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+#game-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
+}
+
+.game-left {
+    width: 70%;
+    color: paleturquoise;
+    text-align: center;
+}
+
+.game-right {
+    width: 25%;
+    color: paleturquoise;
+    text-align: left;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+}
+
+#input-box {
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+button {
+    padding: 10px;
+    background-color: chartreuse;
+    color: black;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: lightgreen;
+}
+
+#highscore-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+#highscore-list li {
+    color: lightgreen;
+    margin-bottom: 5px;
+}

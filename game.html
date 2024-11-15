@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Shell Command Speed Typing Game</title>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo" onclick="window.location.href='index.html'">Blazy.sec</div>
+        <nav class="navbar-links">
+            <a href="index.html">Home</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
+    <main id="game-container">
+        <div class="game-left">
+            <h1 class="desc">Shell Command Speed Typing Game</h1>
+            <p>Type the shell commands as fast as you can!</p>
+            <div id="target-command">Click "Start" to begin hacking!</div>
+            <input type="text" id="input-box" placeholder="Type here..." disabled>
+            <div id="timer">Time: 30s</div>
+            <div id="score">Score: 0</div>
+            <button id="start-btn">Start</button>
+            <div id="end-screen" style="display: none;">
+                <h2>Game Over!</h2>
+                <p>Your final score is <span id="final-score"></span>.</p>
+                <label for="username">Enter your username: </label>
+                <input type="text" id="username" placeholder="Username" />
+                <button id="submit-score">Submit Score</button>
+            </div>
+        </div>
+        <div class="game-right">
+            <h2>Highscore</h2>
+            <ul id="highscore-list">
+                <!-- Top 5 scores will be listed here -->
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        const targetCommandElement = document.getElementById('target-command');
+        const inputBox = document.getElementById('input-box');
+        const timerElement = document.getElementById('timer');
+        const scoreElement = document.getElementById('score');
+        const startButton = document.getElementById('start-btn');
+        const endScreen = document.getElementById('end-screen');
+        const finalScoreElement = document.getElementById('final-score');
+        const usernameInput = document.getElementById('username');
+        const submitScoreButton = document.getElementById('submit-score');
+        const highscoreList = document.getElementById('highscore-list');
+
+        let shellCommands = [
+            "nmap -sP 192.168.1.0/24",
+            "cd /var/www/html",
+            "ls -l",
+            "cat /etc/passwd",
+            "clear",
+            "pwd",
+            "ifconfig",
+            "grep 'root' /etc/passwd",
+            "sudo apt update",
+            "chmod 777 /path/to/file"
+        ];
+
+        let timer = 30;
+        let score = 0;
+        let currentCommand = "";
+        let gameInterval;
+        let timerInterval;
+        let highscore = localStorage.getItem('highscore') ? JSON.parse(localStorage.getItem('highscore')) : [];
+
+        // Update highscore list
+        function updateHighscore() {
+            highscoreList.innerHTML = "";
+            highscore.slice(0, 5).forEach(entry => {
+                const li = document.createElement('li');
+                li.textContent = `${entry.name}: ${entry.score}`;
+                highscoreList.appendChild(li);
+            });
+        }
+
+        function getRandomCommand() {
+            return shellCommands[Math.floor(Math.random() * shellCommands.length)];
+        }
+
+        function startGame() {
+            // Reset game state
+            timer = 30;
+            score = 0;
+            timerElement.textContent = `Time: ${timer}s`;
+            scoreElement.textContent = `Score: ${score}`;
+            inputBox.value = "";
+            inputBox.disabled = false;
+            inputBox.focus();
+            startButton.style.display = "none";
+            endScreen.style.display = "none";
+
+            // Set first command
+            currentCommand = getRandomCommand();
+            targetCommandElement.textContent = currentCommand;
+
+            // Start timers
+            gameInterval = setInterval(() => {
+                if (inputBox.value.trim() === currentCommand) {
+                    score++;
+                    scoreElement.textContent = `Score: ${score}`;
+                    inputBox.value = "";
+                    currentCommand = getRandomCommand();
+                    targetCommandElement.textContent = currentCommand;
+                }
+            }, 100);
+
+            timerInterval = setInterval(() => {
+                timer--;
+                timerElement.textContent = `Time: ${timer}s`;
+                if (timer <= 0) endGame();
+            }, 1000);
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            clearInterval(timerInterval);
+            inputBox.disabled = true;
+            startButton.style.display = "inline-block";
+            finalScoreElement.textContent = score;
+            endScreen.style.display = "block";
+        }
+
+        function submitScore() {
+            const username = usernameInput.value.trim();
+            if (username) {
+                // Check if username already exists
+                let existingPlayer = highscore.find(player => player.name === username);
+
+                if (existingPlayer) {
+                    // If player exists, update the score if it's higher
+                    if (existingPlayer.score < score) {
+                        existingPlayer.score = score;
+                    }
+                } else {
+                    // Add new player
+                    const newScore = { score: score, name: username };
+                    highscore.push(newScore);
+                }
+
+                // Sort and limit to top 5 scores
+                highscore.sort((a, b) => b.score - a.score);
+                if (highscore.length > 5) highscore.pop(); // Limit to top 5 scores
+
+                // Save the updated highscore in localStorage
+                localStorage.setItem('highscore', JSON.stringify(highscore));
+
+                // Update the highscore display
+                updateHighscore();
+
+                // Clear username input field
+                usernameInput.value = '';
+            } else {
+                alert("Please enter a username.");
+            }
+        }
+
+        submitScoreButton.addEventListener('click', submitScore);
+        startButton.addEventListener('click', startGame);
+
+        // Initial highscore update
+        updateHighscore();
+    </script>
+</body>
+</html>
